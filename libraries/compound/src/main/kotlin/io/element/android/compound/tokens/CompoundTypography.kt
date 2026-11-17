@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import io.element.android.compound.tokens.generated.TypographyTokens
+import io.element.android.compound.theme.MontserratFontFamily
 
 // 32px (Material) vs 34px, it's the closest one
 internal val compoundHeadingXlRegular = TypographyTokens.fontHeadingXlRegular
@@ -63,16 +64,19 @@ internal val compoundTypography = Typography(
     // displayLarge = , 57px (Material) size. We have no equivalent
     // displayMedium = , 45px (Material) size. We have no equivalent
     // displaySmall = , 36px (Material) size. We have no equivalent
-    headlineLarge = compoundHeadingXlRegular,
-    headlineMedium = compoundHeadingLgRegular,
-    headlineSmall = defaultHeadlineSmall,
-    titleLarge = compoundHeadingMdRegular,
-    titleMedium = compoundBodyLgMedium,
-    titleSmall = compoundBodyMdMedium,
-    bodyLarge = compoundBodyLgRegular,
-    bodyMedium = compoundBodyMdRegular,
-    bodySmall = compoundBodySmRegular,
-    labelLarge = compoundBodyMdMedium,
-    labelMedium = compoundBodySmMedium,
-    labelSmall = compoundBodyXsMedium,
+    headlineLarge = compoundHeadingXlRegular.copy(fontFamily = MontserratFontFamily),
+    headlineMedium = compoundHeadingLgRegular.copy(fontFamily = MontserratFontFamily),
+    headlineSmall = defaultHeadlineSmall.copy(fontFamily = MontserratFontFamily),
+
+    titleLarge = compoundHeadingMdRegular.copy(fontFamily = MontserratFontFamily),
+    titleMedium = compoundBodyLgMedium.copy(fontFamily = MontserratFontFamily),
+    titleSmall = compoundBodyMdMedium.copy(fontFamily = MontserratFontFamily),
+
+    bodyLarge = compoundBodyLgRegular.copy(fontFamily = MontserratFontFamily),
+    bodyMedium = compoundBodyMdRegular.copy(fontFamily = MontserratFontFamily),
+    bodySmall = compoundBodySmRegular.copy(fontFamily = MontserratFontFamily),
+
+    labelLarge = compoundBodyMdMedium.copy(fontFamily = MontserratFontFamily),
+    labelMedium = compoundBodySmMedium.copy(fontFamily = MontserratFontFamily),
+    labelSmall = compoundBodyXsMedium.copy(fontFamily = MontserratFontFamily),
 )

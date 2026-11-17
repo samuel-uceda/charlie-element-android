@@ -68,7 +68,7 @@ object ElementTheme {
     /**
      * Compound [Typography] tokens. In Figma, these have the `Android/font/` prefix.
      */
-    val typography: TypographyTokens = TypographyTokens
+    val typography = CharlieTypography
 
     /**
      * Returns whether the theme version used is the light or the dark one.

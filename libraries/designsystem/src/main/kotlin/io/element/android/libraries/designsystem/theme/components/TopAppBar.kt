@@ -52,7 +52,7 @@ fun TopAppBar(
             Text(
                 text = titleStr,
                 modifier = Modifier.semantics { heading() },
-                style = ElementTheme.typography.aliasScreenTitle,
+                style = ElementTheme.typography.fontHeadingLgBold,
             )
         },
         modifier = modifier,

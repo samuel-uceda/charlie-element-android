@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2026 Element Creations Ltd.
+  ~
+  ~ SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
+  ~ Please see LICENSE files in the repository root for full details.
+  -->
+
+<resources>
+    <!-- Charlie Chat Login -->
+    <string name="charlie_login_title">Charlie Chat</string>
+    <string name="charlie_login_subtitle">Sign in with your UCEDA account</string>
+    <string name="charlie_login_username">Username or Student Code</string>
+    <string name="charlie_login_password">Password</string>
+    <string name="charlie_login_button">Sign In</string>
+    <string name="charlie_login_error_sign_in">We couldn`t verify your credentials. Please try again.</string>
+
+</resources>

@@ -8,7 +8,8 @@
 
 package io.element.android.features.login.impl.screens.loginpassword
 
-import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,11 +31,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentType
@@ -42,6 +48,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
@@ -50,9 +57,6 @@ import io.element.android.features.login.impl.R
 import io.element.android.features.login.impl.error.loginError
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.designsystem.atomic.molecules.ButtonColumnMolecule
-import io.element.android.libraries.designsystem.atomic.molecules.IconTitleSubtitleMolecule
-import io.element.android.libraries.designsystem.components.BigIcon
-import io.element.android.libraries.designsystem.components.button.BackButton
 import io.element.android.libraries.designsystem.components.dialogs.ErrorDialog
 import io.element.android.libraries.designsystem.components.form.textFieldState
 import io.element.android.libraries.designsystem.modifiers.bringIntoViewOnImeVisible
@@ -63,11 +67,21 @@ import io.element.android.libraries.designsystem.theme.components.Button
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.PasswordVisibilityToggle
 import io.element.android.libraries.designsystem.theme.components.Scaffold
+import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextField
-import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.testtags.TestTags
 import io.element.android.libraries.testtags.testTag
 import io.element.android.libraries.ui.strings.CommonStrings
+import androidx.compose.material3.Button as M3Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text as M3Text
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.shape.RoundedCornerShape
+
+private val CharlieSecondary = Color(0xFF29335C)
+private val CharlieSecondaryDisabled = Color(0xFF5B6487)
 
 @Composable
 fun LoginPasswordView(
@@ -76,11 +90,6 @@ fun LoginPasswordView(
     modifier: Modifier = Modifier,
 ) {
     val autofillManager = LocalAutofillManager.current
-
-    BackHandler {
-        autofillManager?.cancel()
-        onBackClick()
-    }
 
     val isLoading by remember(state.loginAction) {
         derivedStateOf {
@@ -100,40 +109,30 @@ fun LoginPasswordView(
 
     Scaffold(
         modifier = modifier,
-        topBar = {
-            TopAppBar(
-                title = {},
-                navigationIcon = {
-                    BackButton(onClick = {
-                        autofillManager?.cancel()
-                        onBackClick()
-                    })
-                },
-            )
-        }
+        topBar = {},
     ) { padding ->
         val scrollState = rememberScrollState()
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF971B2F),
+                            Color(0xFF801A3B)
+                        )
+                    )
+                )
                 .imePadding()
                 .padding(padding)
                 .consumeWindowInsets(padding)
                 .verticalScroll(state = scrollState)
                 .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
         ) {
-            // Title
-            IconTitleSubtitleMolecule(
-                modifier = Modifier.padding(top = 20.dp, start = 16.dp, end = 16.dp),
-                iconStyle = BigIcon.Style.Default(CompoundIcons.UserProfileSolid()),
-                title = stringResource(
-                    id = R.string.screen_account_provider_signin_title,
-                    state.accountProvider.friendlyServerName()
-                ),
-                subTitle = stringResource(id = R.string.screen_login_subtitle)
-            )
-            Spacer(Modifier.height(40.dp))
+            CharlieLoginHeader()
+            Spacer(modifier = Modifier.height(16.dp))
+
             LoginForm(
                 state = state,
                 isLoading = isLoading,
@@ -141,23 +140,42 @@ fun LoginPasswordView(
             )
             // Min spacing
             Spacer(Modifier.height(24.dp))
-            // Flexible spacing to keep the submit button at the bottom
-            Spacer(modifier = Modifier.weight(1f))
             // Submit
             Box(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
             ) {
                 ButtonColumnMolecule {
-                    Button(
-                        text = stringResource(CommonStrings.action_continue),
-                        showProgress = isLoading,
+                    M3Button(
                         onClick = ::submit,
-                        enabled = state.submitEnabled || isLoading,
+                        enabled = state.submitEnabled && !isLoading,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .testTag(TestTags.loginContinue)
-                    )
+                            .testTag(TestTags.loginContinue),
+                        shape = RoundedCornerShape(28.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = CharlieSecondary,
+                            contentColor = Color.White,
+                            disabledContainerColor = CharlieSecondaryDisabled,
+                            disabledContentColor = Color.White.copy(alpha = 0.85f)
+                        )
+                    ) {
+                        if (isLoading) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp),
+                                    strokeWidth = 2.dp,
+                                    color = Color.White
+                                )
+                                M3Text(text = stringResource(R.string.charlie_login_button))
+                            }
+                        } else {
+                            M3Text(text = stringResource(R.string.charlie_login_button))
+                        }
+                    }
                     Spacer(modifier = Modifier.height(48.dp))
                 }
             }
@@ -168,6 +186,40 @@ fun LoginPasswordView(
                 })
             }
         }
+    }
+}
+
+@Composable
+private fun CharlieLoginHeader() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 36.dp, bottom = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(R.drawable.charlie_login_icon),
+            contentDescription = null,
+            modifier = Modifier.size(150.dp)
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = stringResource(R.string.charlie_login_title),
+            style = ElementTheme.typography.fontHeadingLgBold,
+            color = Color.White,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = stringResource(R.string.charlie_login_subtitle),
+            style = ElementTheme.typography.fontBodyLgRegular,
+            color = Color.White.copy(alpha = 0.9f),
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -185,7 +237,7 @@ private fun LoginForm(
 
     Column {
         TextField(
-            label = stringResource(R.string.screen_login_form_header),
+
             value = loginFieldState,
             enabled = !isLoading,
             modifier = Modifier
@@ -196,14 +248,14 @@ private fun LoginForm(
                 .semantics {
                     contentType = ContentType.Username
                 },
-            placeholder = stringResource(CommonStrings.common_username),
+            placeholder = stringResource(R.string.charlie_login_username),
             onValueChange = {
                 val sanitized = it.sanitize()
                 loginFieldState = sanitized
                 eventSink(LoginPasswordEvent.SetLogin(sanitized))
             },
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
+                keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(onNext = {
@@ -254,7 +306,7 @@ private fun LoginForm(
                 passwordFieldState = sanitized
                 eventSink(LoginPasswordEvent.SetPassword(sanitized))
             },
-            placeholder = stringResource(CommonStrings.common_password),
+            placeholder = stringResource(R.string.charlie_login_password),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 PasswordVisibilityToggle(
@@ -274,6 +326,7 @@ private fun LoginForm(
     }
 }
 
+
 /**
  * Ensure that the string does not contain any line separator, which can happen when pasting values.
  */
@@ -285,7 +338,7 @@ private fun String.sanitize(): String {
 private fun LoginErrorDialog(error: Throwable, onDismiss: () -> Unit) {
     ErrorDialog(
         title = stringResource(id = CommonStrings.dialog_title_error),
-        content = stringResource(loginError(error)),
+        content = stringResource(R.string.charlie_login_error_sign_in),
         onSubmit = onDismiss
     )
 }

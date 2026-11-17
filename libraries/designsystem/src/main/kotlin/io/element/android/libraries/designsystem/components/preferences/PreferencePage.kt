@@ -82,7 +82,7 @@ private fun PreferenceTopAppBar(
                     heading()
                 },
                 text = title,
-                style = ElementTheme.typography.aliasScreenTitle,
+                style = ElementTheme.typography.fontHeadingLgBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

@@ -10,6 +10,7 @@ package io.element.android.libraries.designsystem.theme
 
 import androidx.compose.ui.text.TextStyle
 import io.element.android.compound.tokens.generated.TypographyTokens
+import io.element.android.compound.theme.CharlieTypography
 
 /*
  * This file contains aliases for TypographyTokens.
@@ -19,4 +20,10 @@ val TypographyTokens.aliasScreenTitle: TextStyle
     get() = fontHeadingSmMedium
 
 val TypographyTokens.aliasButtonText: TextStyle
+    get() = fontBodyLgMedium
+
+val CharlieTypography.aliasScreenTitle: TextStyle
+    get() = fontHeadingSmMedium
+
+val CharlieTypography.aliasButtonText: TextStyle
     get() = fontBodyLgMedium
