@@ -40,6 +40,7 @@ import io.element.android.compound.tokens.generated.TypographyTokens
 import io.element.android.compound.tokens.generated.compoundColorsDark
 import io.element.android.compound.tokens.generated.compoundColorsLight
 import io.element.android.compound.tokens.generated.internal.DarkColorTokens
+import io.element.android.compound.colors.SemanticColorsLightDark
 
 /**
  * Inspired from https://medium.com/@lucasyujideveloper/54cbcbde1ace
@@ -104,8 +105,8 @@ fun ElementTheme(
     lightStatusBar: Boolean = !theme.isDark(),
     // true to enable MaterialYou
     dynamicColor: Boolean = false,
-    compoundLight: SemanticColors = compoundColorsLight,
-    compoundDark: SemanticColors = compoundColorsDark,
+    compoundLight: SemanticColors = SemanticColorsLightDark.default.light,
+    compoundDark: SemanticColors = SemanticColorsLightDark.default.dark,
     materialColorsLight: ColorScheme = compoundLight.toMaterialColorScheme(),
     materialColorsDark: ColorScheme = compoundDark.toMaterialColorScheme(),
     typography: Typography = compoundTypography,
